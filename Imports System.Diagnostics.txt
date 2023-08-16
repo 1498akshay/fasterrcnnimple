@@ -1,0 +1,106 @@
+Imports System.Diagnostics
+
+Public Class Form1
+    Public value As String
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Public Sub proccess_OutputDataReceived(ByVal sender As Object, ByVal e As DataReceivedEventArgs)
+        On Error Resume Next
+        If e.Data = "" Then
+        Else
+            value = e.Data
+        End If
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim oProcess As New Process()
+        Dim oStartInfo As New ProcessStartInfo("C:\Users\Public\PYMOL2\python.exe", "hello.py")
+        oStartInfo.UseShellExecute = False
+        oStartInfo.RedirectStandardOutput = True
+        oProcess.StartInfo = oStartInfo
+        oProcess.StartInfo.CreateNoWindow = True ' to hide cmd window. and it's has to be here,before start and before startinfo=startinfo
+        oProcess.Start()
+
+        Dim inputstring As String
+        'Dim name As New List(Of String)
+        'name.Add(sOutput)
+        'For Each a In name
+        'ListBox1.Items.Add(a)
+        'Next
+
+
+        'Dim myList As List(Of String)("[],".ToCharArray())_.Split(","c)_.Select(Function(item)item.Trim())_.ToList() 
+        ' Use the list
+        'For Each item As String In myList
+        'Console.WriteLine(item)
+        'Next
+
+
+
+        Using oStreamReader As System.IO.StreamReader = oProcess.StandardOutput
+            inputstring = oStreamReader.ReadToEnd()
+        End Using
+
+
+
+        Dim list As New List(Of List(Of Integer))()
+        ' Remove outer square brackets from the string 
+        Dim cleanedString As String = inputString.TrimStart("["c).TrimEnd("]"c)
+        ' Split by comma and remove any spaces 
+        Dim innerLists As String() = cleanedString.Split(","c)
+        For Each innerList As String In innerLists
+            ' Remove any whitespace and brackets from the inner list 
+            Dim cleanedInnerList As String = innerList.Trim().TrimStart("["c).TrimEnd("]"c)
+            Dim numbers As String() = cleanedInnerList.Split(","c)
+            ' Convert each number string to an integer and add it to the inner list 
+            Dim innerListNumbers As New List(Of Integer)()
+            For Each number As String In numbers
+                innerListNumbers.Add(Integer.Parse(number.Trim()))
+            Next
+            ' Add the populated inner list to the final list 
+            list.Add(innerListNumbers)
+        Next
+        ' Display the resulting list of lists 
+        For Each innerList As List(Of Integer) In list
+            For Each number As Integer In innerList
+                ListBox1.Items.Add(number & " ")
+            Next
+
+        Next
+
+
+
+        'Console.WriteLine(sOutput)
+        'TextBox1.Text = sOutput
+        'Debug.Print(sOutput)
+    End Sub
+
+    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
+
+    End Sub
+End Class
+
+
+
+
+
+
+
+
+
+class ObjectClass:
+    def __init__(self, value):
+        self.value = value
+
+    def print_info(self):
+        print("Object value:", "x1= ", self.value[:1]," ,y1= ",self.value[1:2]," ,x2= ",self.value[2:3]," ,y2= ",self.value[2:3])
+
+
+# Main program
+elements = [[1, 2, 3, 4], [1,2,3,4]]
+
+for element in elements:
+    obj = ObjectClass(element)
+    obj.print_info()
